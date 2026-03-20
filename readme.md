@@ -1,4 +1,4 @@
-# MeetOps
+# MeetOps - Automate Your Meeting Operations
 
 MeetOps is an AI-powered meeting automation system that processes raw transcripts, extracts structured action items with owners and deadlines, and delivers them to your team via Slack or Discord — all in one step. Powered by Google's Gemini model, it converts unstructured meeting conversations into executable workflows, reducing manual coordination overhead.
 
