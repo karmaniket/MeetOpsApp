@@ -1,150 +1,205 @@
-# MeetOps Agent
+# MeetOps
 
-MeetOps Agent is an AI-powered meeting automation system that processes raw transcripts, extracts structured action items with owners and deadlines, and automates follow-ups via Discord and calendar integrations. Powered by Google’s Gemini model, it converts unstructured conversations into executable workflows, reducing manual coordination and enabling faster operational feedback cycles.
+MeetOps is an AI-powered meeting automation system that processes raw transcripts, extracts structured action items with owners and deadlines, and delivers them to your team via Slack or Discord — all in one step. Powered by Google's Gemini model, it converts unstructured meeting conversations into executable workflows, reducing manual coordination overhead.
 
-## *Live On Render [link](https://meetopsapp.onrender.com)*
+## Live
 
-## *Click below for full tutorial*
+- **Frontend:** [meetopsai.vercel.app](https://meetopsai.vercel.app/)
+- **Backend API:** [meetopsagent.onrender.com](https://meetopsagent.onrender.com/)
+
+## Demo
 
 [![Demo](https://img.youtube.com/vi/K6lmfH7ocXQ/maxresdefault.jpg)](https://youtu.be/K6lmfH7ocXQ)
 
-## Table of Contents
-- [Features](#features)
-- [Architecture](#architecture)
-- [Setup](#setup)
-- [Deployment Configuration](#deployment-configuration)
-- [Database](#database)
-- [Agents](#agents)
-- [Tools Integration](#tools-integration)
-- [Logging](#logging)
-- [Support MeetOpsApp](#support-meetopsapp)
-- [License](#license)
-
 ## Features
-- Automated meeting transcript cleaning and action extraction using AI
-- Feedback and review management
-- Production and marketing planning support
-- Discord and calendar integration for notifications and scheduling
-- Centralized logging and monitoring
-- Extensible agent and tool architecture
+
+- AI transcript cleaning — removes filler words, fixes typos, preserves speaker structure
+- Action item extraction with owner, due date, and priority (HIGH / MEDIUM / LOW)
+- One-click delivery to Slack or Discord via webhook
+- Live global usage counter visible to all users
+- Persistent feedback system powered by Supabase
+- 15-minute session auto-clear for privacy
+- Fully responsive dark-theme SaaS UI built with Next.js
 
 ## Architecture
 
-```bash
+```
 meetops/
-├── agents/          # Core agent logic
-│  ├── __init__.py
-│  ├── logger.py
-│  └── pipeline.py
-├── db/              # Database models and access
-│  ├── __init__.py
-│  ├── models.py
-│  └── meetops.db
-├── logs/            # Log file
-│  └── agent_logs.txt
-├── tools/           # Integrations
-│  ├── __init__.py
-│  ├── calendar_tool.py
-│  └── discord_tool.py
-├── __init__.py
-├── .env             # API keys
-├── app.py           # Main application entry point
-├── main.py          # Alternate entry point or CLI
-└── requirements.txt # Python dependencies
+├── backend/
+│   ├── agents/
+│   │   ├── pipeline.py        # Ingestion, extraction, execution agents
+│   │   └── logger.py          # Operational logging
+│   ├── tools/
+│   │   ├── discord_tool.py    # Slack and Discord webhook integration
+│   │   └── calendar_tool.py   # Calendar event scaffolding
+│   ├── main.py                # FastAPI app entry point
+│   └── requirements.txt
+│
+└── frontend/
+    ├── app/
+    │   ├── page.tsx            # Main page
+    │   ├── layout.tsx          # Root layout and metadata
+    │   ├── globals.css         # Global styles and theme
+    │   └── api/
+    │       ├── feedback/       # Supabase feedback GET + POST
+    │       ├── webhook/        # Server-side Slack/Discord relay
+    │       └── stats/          # Global usage counter
+    ├── components/
+    │   ├── Hero.tsx
+    │   ├── UploadCard.tsx
+    │   ├── Results.js
+    │   ├── WebhookSender.js
+    │   ├── FeedbackTicker.js
+    │   ├── Footer.js
+    │   └── Toast.js
+    └── lib/
+        ├── supabase.ts
+        └── types.ts
+```
+
+## Tech Stack
+
+```
+|       Layer         |       Technology          |
+|         ---         |           ---             |
+| AI Model            | Google Gemini 2.5 Flash   |
+| Backend             | FastAPI + Uvicorn         |
+| Frontend            | Next.js 14 + Tailwind CSS |
+| Database            | Supabase (PostgreSQL)     |
+| Fonts               | Syne + DM Sans            |
+| Hosting - Backend   | Render                    |
+| Hosting - Frontend  | Vercel                    |
 ```
 
 ## Setup
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/karmaniket/MeetOpsAgent.git
-   cd MeetOpsAgent
-   ```
-2. **Install dependencies**
-   ```bash
-   pip install -r meetops/requirements.txt
-   ```
-3. **Configure environment**
-   - Set up required environment variables (API keys for Discord, calendar integrations).
-   - Update database connection settings in `db/models.py` if needed.
 
-### Running the Project Locally
-- **Run the Streamlit frontend:**
-  ```bash
-  streamlit run meetops/app.py
-  ```
-- **Run the FastAPI backend:**
-  ```bash
-  uvicorn meetops.main:app --reload
-  ```
-- **Logs: Application logs are stored in `meetops/logs/agent_logs.txt`.**
-
-## Deployment Configuration
-### Service 1: MeetOpsAgent
-```bash
-version: "1"
-services:
-- type: web
-  name: MeetOpsAgent
-  runtime: python
-  repo: https://github.com/karmaniket/MeetOpsAgent
-  plan: free
-  envVars:
-  - key: GEMINI_API_KEY
-    sync: false
-  region: oregon
-  buildCommand: pip install -r meetops/requirements.txt
-  startCommand: uvicorn meetops.main:app --host 0.0.0.0 --port $PORT
-  autoDeployTrigger: commit
-```
-### Service 2: MeetOpsApp
+### Backend
 
 ```bash
-version: "1"
-services:
-- type: web
-  name: MeetOpsApp
-  runtime: python
-  repo: https://github.com/karmaniket/MeetOpsAgent
-  plan: free
-  envVars:
-  - key: GEMINI_API_KEY
-    sync: false
-  region: oregon
-  buildCommand: pip install -r meetops/requirements.txt
-  startCommand: streamlit run meetops/app.py --server.port $PORT
-  autoDeployTrigger: commit
+git clone https://github.com/karmaniket/MeetOpsAgent.git
+cd MeetOpsAgent
+pip install -r meetops/requirements.txt
 ```
-<!-- > [!IMPORTANT]  
-> ***Both services must be running on Render. If the API returns this error:*** <br>
-> ![image](error429.png)
-> ***Send a request to the following endpoint to wake the service:***
-> ```bash
->  https://meetopsagent.onrender.com/
-> ``` -->
 
-## Database
-- SQLite database file: `meetops.db`
-- Models defined in `db/models.py`
-- Stores feedback, reviews, planning data, and operational metrics.
+Create a `.env` file inside `meetops/`:
+```
+GEMINI_API_KEY=your_key
+```
+
+Run locally:
+```bash
+uvicorn meetops.main:app --reload
+```
+
+### Frontend - Install Node.js
+
+1. Go to [nodejs.org](https://nodejs.org) > Download **LTS version** (v20 or higher) > Run the installer > keep all defaults
+
+2. Open a **new** terminal and verify:
+```
+node -v   # should show v20.x.x
+npm -v    # should show 10.x.x
+```
+
+2. Install dependencies
+
+```bash
+cd frontend
+npm install
+cp .env.local.example .env.local
+```
+
+Fill in `.env.local`:
+```
+NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
+```
+
+Run locally:
+```bash
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000)
+
+## Deployment
+
+### Backend - Render
+
+```yaml
+services:
+  - type: web
+    name: MeetOpsAgent
+    runtime: python
+    repo: https://github.com/karmaniket/MeetOpsAgent
+    plan: free
+    region: oregon
+    buildCommand: pip install -r meetops/requirements.txt
+    startCommand: uvicorn meetops.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+```
+
+### Frontend - Vercel
+
+1. Push to GitHub:
+   ```bash
+   git init
+   git add .
+   git commit -m "initial"
+   git remote add origin {repo_path}
+   git push -u origin main
+   ```
+
+2. Import repo at [vercel.com](https://vercel.com). Add the three `NEXT_PUBLIC_*` environment variables in the Vercel dashboard. Every subsequent `git push` auto-redeploys.
+
+## Supabase Tables
+
+
+**`feedback`**
+```sql
+| Column       | Type        | Notes   |
+|    ---       |     ---     |   ---   |
+| id           | uuid        | auto    |
+| name         | text        | public  |
+| email        | text        | private |
+| message      | text        | public  |
+| created_at   | timestamptz | auto    |
+```
+
+**`meetings_log`**
+```sql
+| Column       | Type        | Notes   |
+|     ---      |     ---     |   ---   |
+| id           | uuid        | auto    |
+| processed_at | timestamptz | auto    |
+```
+
+Both tables require RLS enabled with `allow public insert` and `allow public select` policies.
 
 ## Agents
-- **Logger Agent:** Handles logging and monitoring.
-- **Pipeline Agent:** Orchestrates transcript cleaning, action extraction, and task assignment.
 
-## Tools Integration
-- **Calendar Tool:** Automates scheduling and reminders.
-- **Discord Tool:** Integrates with Discord for team communications and notifications.
+- **Ingestion Agent** — cleans raw transcript, removes filler words, preserves speaker attribution
+- **Action Agent** — extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
+- **Execution Agent** — runs calendar scaffolding and returns structured results with metrics
 
 ## Logging
-- All operational logs are stored in `logs/agent_logs.txt` for monitoring and debugging.
 
-## Support MeetOpsApp
+All agent events are written to `meetops/logs/agent_logs.txt` with event type, input summary, and output for debugging and monitoring.
 
-MeetOpsApp is independently built and currently runs on free-tier infrastructure. To scale the backend, improve reliability, and handle higher meeting volumes, cloud and infrastructure upgrades are required.
+## Support
 
-**Support On [Patreon](https://www.patreon.com/c/AVmades) or [Buymeacoffee](https://buymeacoffee.com/avmades)**
+MeetOps runs on free-tier infrastructure. If it saves you time, consider supporting its development:
 
-If MeetOpsApp saves you time or adds value to your workflow, consider supporting its development. Your contribution directly funds cloud infrastructure, backend scaling, and continued independent development.
+- [Patreon](https://www.patreon.com/c/AVmades)
+- [Buymeacoffee](https://buymeacoffee.com/avmades)
 
 ## License
-This project is licensed under the [MIT License](LICENSE).
+
+[MIT License](LICENSE)
