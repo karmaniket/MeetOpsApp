@@ -13,7 +13,7 @@ MeetOps is an AI-powered meeting automation system that processes raw transcript
 
 ## Features
 
-- AI transcript cleaning — removes filler words, fixes typos, preserves speaker structure
+- AI transcript cleaning, removes filler words, fixes typos, preserves speaker structure
 - Action item extraction with owner, due date, and priority (HIGH / MEDIUM / LOW)
 - One-click delivery to Slack or Discord via webhook
 - Live global usage counter visible to all users
@@ -185,9 +185,9 @@ Both tables require RLS enabled with `allow public insert` and `allow public sel
 
 ## Agents
 
-- **Ingestion Agent** — cleans raw transcript, removes filler words, preserves speaker attribution
-- **Action Agent** — extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
-- **Execution Agent** — runs calendar scaffolding and returns structured results with metrics
+- **Ingestion Agent** : cleans raw transcript, removes filler words, preserves speaker attribution
+- **Action Agent** : extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
+- **Execution Agent** : runs calendar scaffolding and returns structured results with metrics
 
 ## Logging
 
