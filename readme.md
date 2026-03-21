@@ -185,9 +185,9 @@ Both tables require RLS enabled with `allow public insert` and `allow public sel
 
 ## Agents
 
-- **Ingestion Agent** : cleans raw transcript, removes filler words, preserves speaker attribution
-- **Action Agent** : extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
-- **Execution Agent** : runs calendar scaffolding and returns structured results with metrics
+- **Ingestion Agent:** cleans raw transcript, removes filler words, preserves speaker attribution
+- **Action Agent:** extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
+- **Execution Agent:** runs calendar scaffolding and returns structured results with metrics
 
 ## Logging
 
