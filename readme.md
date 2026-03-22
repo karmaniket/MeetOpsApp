@@ -4,8 +4,8 @@ MeetOps is an AI-powered meeting automation system that processes raw transcript
 
 ## Live
 
-- **Frontend:** [meetopsai.vercel.app](https://meetopsai.vercel.app/)
-- **Backend API:** [meetopsagent.onrender.com](https://meetopsagent.onrender.com/)
+- **Frontend:** [meetopsai.vercel.app](https://meetopsai.vercel.app)
+- **Backend API:** [meetopsagent.onrender.com](https://meetopsagent.onrender.com)
 
 ## Demo
 
@@ -20,6 +20,8 @@ MeetOps is an AI-powered meeting automation system that processes raw transcript
 - Persistent feedback system powered by Supabase
 - 15-minute session auto-clear for privacy
 - Fully responsive dark-theme SaaS UI built with Next.js
+- Community feedback page with social handle verification and platform linking
+- FAQ section with smooth accordion animations
 
 ## Architecture
 
@@ -50,6 +52,8 @@ meetops/
     │   ├── Results.js
     │   ├── WebhookSender.js
     │   ├── FeedbackTicker.js
+    │   ├── FeedbackSection.tsx
+    │   ├── FAQ.tsx
     │   ├── Footer.js
     │   └── Toast.js
     └── lib/
@@ -161,17 +165,20 @@ services:
 
 ## Supabase Tables
 
-
 **`feedback`**
 ```sql
-| Column       | Type        | Notes   |
-|    ---       |     ---     |   ---   |
-| id           | uuid        | auto    |
-| name         | text        | public  |
-| email        | text        | private |
-| message      | text        | public  |
-| created_at   | timestamptz | auto    |
+| Column        | Type        | Notes                        |
+|     ---       |     ---     |     ---                      |
+| id            | uuid        | primary key, auto            |
+| name          | text        | public                       |
+| message       | text        | public                       |
+| social_handle | text        | public, unique per platform  |
+| platform      | text        | public                       |
+| created_at    | timestamptz | auto                         |
 ```
+
+Unique constraint: `(social_handle, platform)` combined.
+
 
 **`meetings_log`**
 ```sql
@@ -187,7 +194,7 @@ Both tables require RLS enabled with `allow public insert` and `allow public sel
 
 - **Ingestion Agent:** cleans raw transcript, removes filler words, preserves speaker attribution
 - **Action Agent:** extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
-- **Execution Agent:** runs calendar scaffolding and returns structured results with metrics
+- **Execution Agent:** processes extracted actions and returns structured results with metrics
 
 ## Logging
 
