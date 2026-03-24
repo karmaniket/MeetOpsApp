@@ -19,9 +19,9 @@ MeetOps is an AI-powered meeting automation system that processes raw transcript
 - Live global usage counter visible to all users
 - Persistent feedback system powered by Supabase
 - 15-minute session auto-clear for privacy
-- Fully responsive dark-theme SaaS UI built with Next.js
+- API rate limiter
+- Gemini API limit notification on Discord via webhook
 - Community feedback page with social handle verification and platform linking
-- FAQ section with smooth accordion animations
 
 ## Architecture
 
