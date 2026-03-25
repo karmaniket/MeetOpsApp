@@ -2,14 +2,11 @@
 
 MeetOps is an AI-powered meeting automation system that processes raw transcripts, extracts structured action items with owners and deadlines, and delivers them to your team via Slack or Discord, all in seconds. Powered by Google's Gemini model, it converts unstructured meeting conversations into executable workflows, reducing manual coordination overhead.
 
-## Live
-
-- **Frontend:** [meetopsai.vercel.app](https://meetopsai.vercel.app)
-- **Backend API:** [meetopsagent.onrender.com](https://meetopsagent.onrender.com)
+# *[Live](https://meetopsai.vercel.app)*
 
 ## Demo
 
-[![Demo](https://img.youtube.com/vi/K6lmfH7ocXQ/maxresdefault.jpg)](https://youtu.be/K6lmfH7ocXQ)
+[![Demo](https://img.youtube.com/vi/d7Nvl2-KT14/maxresdefault.jpg)](https://youtu.be/d7Nvl2-KT14)
 
 ## Features
 
@@ -80,14 +77,15 @@ meetops/
 ### Backend
 
 ```bash
-git clone https://github.com/karmaniket/MeetOpsAgent.git
-cd MeetOpsAgent
+git clone https://github.com/karmaniket/MeetOps.git
+cd MeetOps
 pip install -r meetops/requirements.txt
 ```
 
 Create a `.env` file inside `meetops/`:
 ```
 GEMINI_API_KEY=your_key
+ALERT_DISCORD_WEBHOOK_URL=your_discord_webhook
 ```
 
 Run locally:
@@ -95,7 +93,7 @@ Run locally:
 uvicorn meetops.main:app --reload
 ```
 
-### Frontend - Install Node.js
+### Frontend
 
 1. Go to [nodejs.org](https://nodejs.org) > Download **LTS version** (v20 or higher) > Run the installer > keep all defaults
 
@@ -110,12 +108,12 @@ npm -v    # should show 10.x.x
 ```bash
 cd frontend
 npm install
-cp .env.local.example .env.local
+cp .env.local .env.local.example
 ```
 
 Fill in `.env.local`:
 ```
-NEXT_PUBLIC_API_URL=http://127.0.0.1:8000
+NEXT_PUBLIC_API_URL=your_backend_url
 NEXT_PUBLIC_SUPABASE_URL=https://xxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key
 ```
@@ -125,7 +123,8 @@ Run locally:
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000)
+Open `http://localhost:3000`
+
 
 ## Deployment
 
@@ -134,9 +133,9 @@ Open [http://localhost:3000](http://localhost:3000)
 ```yaml
 services:
   - type: web
-    name: MeetOpsAgent
+    name: MeetOps
     runtime: python
-    repo: https://github.com/karmaniket/MeetOpsAgent
+    repo: https://github.com/karmaniket/MeetOps
     plan: free
     region: oregon
     buildCommand: pip install -r meetops/requirements.txt
@@ -144,9 +143,7 @@ services:
     envVars:
       - key: GEMINI_API_KEY
         sync: false
-      - key: SUPABASE_URL
-        sync: false
-      - key: SUPABASE_ANON_KEY
+      - key: ALERT_DISCORD_WEBHOOK_URL
         sync: false
 ```
 
@@ -179,7 +176,6 @@ services:
 
 Unique constraint: `(social_handle, platform)` combined.
 
-
 **`meetings_log`**
 ```sql
 | Column       | Type        | Notes   |
@@ -195,10 +191,6 @@ Both tables require RLS enabled with `allow public insert` and `allow public sel
 - **Ingestion Agent:** cleans raw transcript, removes filler words, preserves speaker attribution
 - **Action Agent:** extracts tasks, owners, due dates, and priorities using Gemini with the current system date as reference
 - **Execution Agent:** processes extracted actions and returns structured results with metrics
-
-## Logging
-
-All agent events are written to `meetops/logs/agent_logs.txt` with event type, input summary, and output for debugging and monitoring.
 
 ## Support
 
