@@ -4,7 +4,7 @@ MeetOps is an AI-powered meeting automation system that processes raw transcript
 
 # *[Live](https://meetopsai.vercel.app)*
 
-## Demo
+## *Click below for full demo*
 
 [![Demo](https://img.youtube.com/vi/d7Nvl2-KT14/maxresdefault.jpg)](https://youtu.be/d7Nvl2-KT14)
 
@@ -39,6 +39,8 @@ meetops/
     │   ├── page.tsx            # Main page
     │   ├── layout.tsx          # Root layout and metadata
     │   ├── globals.css         # Global styles and theme
+    │   ├── robots.ts
+    │   ├── sitemap.ts
     │   └── api/
     │       ├── feedback/       # Supabase feedback GET + POST
     │       ├── webhook/        # Server-side Slack/Discord relay
@@ -46,11 +48,12 @@ meetops/
     ├── components/
     │   ├── Hero.tsx
     │   ├── UploadCard.tsx
+    │   ├── FeedbackSection.tsx
+    │   ├── LegalSection.tsx
+    │   ├── FAQ.tsx
     │   ├── Results.js
     │   ├── WebhookSender.js
     │   ├── FeedbackTicker.js
-    │   ├── FeedbackSection.tsx
-    │   ├── FAQ.tsx
     │   ├── Footer.js
     │   └── Toast.js
     └── lib/
